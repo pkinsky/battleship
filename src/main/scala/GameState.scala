@@ -1,27 +1,16 @@
 package com.pkinsky.battleship
 
-sealed trait Player
-case object A extends Player
-case object B extends Player
 
-sealed trait MoveResult
-case object Hit extends MoveResult
-case object Miss extends MoveResult
-case object AlreadyTaken extends MoveResult
-case object Sunk extends MoveResult
-case object Win extends MoveResult
-
-case class PlayingGameState(
+case class GameState(
   boards: Map[Player, Board],
-  turn: Player = A //player A goes first
+  turn: Player = A
 )
 
-object PlayingGameState{
-  //player is player making move, opposite of target board
-  def playTurn(state: PlayingGameState)(player: Player, target: Point): (MoveResult, PlayingGameState) = {
-    val targetPlayer = if (player == A) B else A
-    val targetBoard = state.boards.get(targetPlayer).getOrElse(throw new Exception("player not found"))
-    val targetSquare = targetBoard.state.get(target).getOrElse(throw new Exception("square not found"))
+object GameState{
+  def playTurn(state: GameState)(target: Point): (MoveResult, GameState) = {
+    val targetPlayer = if (state.turn == A) B else A
+    val targetBoard = state.boards.getOrElse(targetPlayer, throw new Exception(s"board for $targetPlayer not found"))
+    val targetSquare = targetBoard.state.getOrElse(target, throw new Exception(s"square at $target not found"))
 
     if (targetSquare.hit){//already hit, invalid
       (AlreadyTaken, state) //state does not change
