@@ -1,36 +1,8 @@
+package com.pkinsky.battleship
+
 sealed trait Player
 case object A extends Player
 case object B extends Player
-
-sealed trait ShipType {
-  val size: Int
-}
-case object ShipType {
-  val startingTypes = Set(Carrier, Battleship, Cruiser, Submarine, Destroyer)
-}
-
-case object Carrier extends ShipType { val size = 5 }
-case object Battleship extends ShipType { val size = 4 }
-case object Cruiser extends ShipType { val size = 3 }
-case object Submarine extends ShipType { val size = 3 }
-case object Destroyer extends ShipType { val size = 2 }
-
-case class Point(x: Int, y: Int)
-case class Square(point: Point, ship: Option[Ship], hit: Boolean = false)
-
-case class Ship(points: Set[Point], shipType: ShipType){
-  assert(points.size == shipType.size, "ship should occupy number of points equal to size")
-
-  //return true if all points on ship have been hit on a given board
-  def isDead(board: Board): Boolean = points.forall{ p =>
-    board.state.get(p).map{ s => s.hit }.getOrElse(true)
-  }
-}
-
-
-case class Board(state: Map[Point, Square], ships: Set[Ship]){
-  def allShipsDead: Boolean = ships.forall(_.isDead(this))
-}
 
 sealed trait MoveResult
 case object Hit extends MoveResult
@@ -71,9 +43,3 @@ object PlayingGameState{
     }
   }
 }
-
-
-//PROBLEM: two phases of game, need to represent both
-//PROBLEM: also I'm supposed to be able to finish this in an hour so I'm not sure...
-//you know what? I got different idea from meeting today,
-//I think, today I got more of a 'just build your version of the game battleship and show it to me, not do it on collabedit. should clarify that'
