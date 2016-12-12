@@ -14,21 +14,17 @@ object GameState{
 
     if (targetSquare.hit){//already hit, invalid
       (AlreadyTaken, state) //state does not change
-    } else targetSquare.ship match {
-      case None =>
-        val updatedSquare = targetSquare.copy(hit = true)
-        val updatedBoard = targetBoard.copy(state = targetBoard.state.updated(target, updatedSquare))
-        val updatedState = state.copy(turn = targetPlayer, boards = state.boards.updated(targetPlayer, updatedBoard))
-        (Miss, updatedState)
+    } else {
+      val updatedSquare = targetSquare.copy(hit = true)
+      val updatedBoard = targetBoard.copy(state = targetBoard.state.updated(target, updatedSquare))
+      val updatedState = state.copy(turn = targetPlayer, boards = state.boards.updated(targetPlayer, updatedBoard))
 
-      case Some(ship) =>
-        val updatedSquare = targetSquare.copy(hit = true)
-        val updatedBoard = targetBoard.copy(state = targetBoard.state.updated(target, updatedSquare))
-        val updatedState = state.copy(turn = targetPlayer, boards = state.boards.updated(targetPlayer, updatedBoard))
-
-        if (updatedBoard.allShipsDead) (Win, updatedState)
-        else if (ship.isDead(updatedBoard)) (Sunk, updatedState)
-        else (Hit, updatedState)
+      targetSquare.ship match {
+        case Some(ship) if updatedBoard.allShipsDead => (Win, updatedState)
+        case Some(ship) if ship.isDead(updatedBoard) => (Sunk, updatedState)
+        case Some(ship) => (Hit, updatedState)
+        case None => (Miss, updatedState)
+      }
     }
   }
 }

@@ -6,7 +6,7 @@ case class Ship(points: Seq[Point], shipType: ShipType){
 
   //return true if all points on ship have been hit on a given board
   def isDead(board: Board): Boolean = points.forall{ p =>
-    board.state.get(p).map{ s => s.hit }.getOrElse(true)
+    board.state.get(p).forall{ s => s.hit }
   }
 }
 

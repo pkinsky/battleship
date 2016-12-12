@@ -5,7 +5,7 @@ object Board{
     val state = (0 until x).flatMap{ x =>
       (0 until y).map { y =>
         val p = Point(x,y)
-        (p, Square(p, None, false))
+        (p, Square(p))
       }
     }.toMap
 
@@ -65,5 +65,5 @@ case class Board(state: Map[Point, Square], ships: Set[Ship]){
   }
 }
 
-case class Square(point: Point, ship: Option[Ship], hit: Boolean = false)
+case class Square(point: Point, ship: Option[Ship] = None, hit: Boolean = false)
 case class Point(x: Int, y: Int)
